@@ -133,7 +133,7 @@ do_prefix () {
 }
 
 LAYOUT=versioned
-register_option "--layout=<layout>" select_toolchain "Pass --layout argument to bjam (default is --layout=versioned)"
+register_option "--layout=<layout>" select_toolchain "Pass --layout argument to b2 (default is --layout=versioned)"
 select_toolchain () {
     LAYOUT=$1
 }
@@ -431,7 +431,7 @@ fi
 # ---------
 # Bootstrap
 # ---------
-if [ ! -f ./$BOOST_DIR/bjam ]
+if [ ! -f ./$BOOST_DIR/b2 ]
 then
   # Make the initial bootstrap
   echo "Performing boost bootstrap"
@@ -452,7 +452,7 @@ then
   fi
   cd $PROGDIR
   
-  echo "finish boost bootstrap, check bjam manually"
+  echo "finish boost bootstrap, check b2 manually"
   echo "if not exist, copy it from the same location as b2"
   read
   
@@ -471,7 +471,7 @@ then
           if [ "$ARCH" = "common" ]; then
               continue
           fi
-          JAMARCH="`echo ${ARCH} | tr -d '_-'`" # Remove all dashes, bjam does not like them
+          JAMARCH="`echo ${ARCH} | tr -d '_-'`" # Remove all dashes, b2 does not like them
           sed "s/%ARCH%/${JAMARCH}/g" "$SCRIPTDIR"/configs/user-config-${CONFIG_VARIANT}-${BOOST_VER}-common.jam >> $BOOST_DIR/tools/build/src/user-config.jam || exit 1
           cat "$SCRIPTDIR"/configs/user-config-${CONFIG_VARIANT}-${BOOST_VER}-$ARCH.jam >> $BOOST_DIR/tools/build/src/user-config.jam || exit 1
           echo ';' >> $BOOST_DIR/tools/build/src/user-config.jam || exit 1
@@ -560,7 +560,7 @@ echo "Building boost for android for $ARCH"
 
   LIBRARIES_BROKEN=""
   if [ "$TOOLSET" = "clang" ]; then
-      JAMARCH="`echo ${ARCH} | tr -d '_-'`" # Remove all dashes, bjam does not like them
+      JAMARCH="`echo ${ARCH} | tr -d '_-'`" # Remove all dashes, b2 does not like them
       TOOLSET_ARCH=${TOOLSET}-${JAMARCH}
       TARGET_OS=android
       if [ "$ARCH" = "armeabi" ]; then
@@ -583,7 +583,7 @@ echo "Building boost for android for $ARCH"
       unset WITHOUT_LIBRARIES
   fi
 
-  { ./bjam -q                         \
+  { ./b2 -q                           \
          -d+2                         \
          --ignore-site-config         \
          -j$NCPU                      \
